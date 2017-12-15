@@ -1,7 +1,7 @@
 // import socket from '../../utils/socket'
 import { formatTime } from '../../utils/util'
 const app = getApp()
-
+const socketio = app.globalData.socketio
 app.getUserInfo()
 
 Page({
@@ -47,8 +47,9 @@ Page({
     })
   },
   onLoad(options){
+    
     // 页面初始化 options为页面跳转所带来的参数
-    socket.onMessage((data)=>{
+    socketio.on('message',(data)=>{
       if(data.cmd != 'MESSAGE')
         return
       let messages = this.data.messages
@@ -122,7 +123,7 @@ Page({
   },
   onReady(){
     // 页面渲染完成
-
+    
     wx.setNavigationBarTitle({
       title: this.data.title
     })
@@ -153,7 +154,7 @@ Page({
     // console.log(e);
     if(this.data.more == 'ion-ios-send'){
       console.log(this.data.msg)
-      socket.sendMessage({
+      socketio.emit('message', {
         cmd:'MESSAGE',
         peopleId: app.globalData.peopleId,
         roomId: '1000',
